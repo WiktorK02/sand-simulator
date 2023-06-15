@@ -1,3 +1,5 @@
+
+![main](https://github.com/WiktorK02/sand-simulator/assets/123249470/cc8d7b66-37e5-4257-884c-b0da0191ec32)
 # Sand&Water Simulator 
 ## About Project
 Simple python sand and water simulator in terminal 
