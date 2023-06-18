@@ -4,7 +4,7 @@ import random
 import pyfiglet # Generate ascii text 
 
 
-class Sand:
+class Object:
     def __init__(self, x, y, collision):
         self.x = x
         self.y = y
@@ -14,7 +14,7 @@ class Sand:
         if object.y < matrix_height -1 and matrix_width >= object.x > 0 and matrix[object.y + 1][object.x] == ' ':
             matrix[object.y][object.x] = ' '  # Clear the current position
             object.y += 1  # Update the position
-            matrix[object.y][object.x] = '▮'  # Update the new position
+            matrix[object.y][object.x] = '⛞'  # Update the new position
         else:
              object.collision = True
     
@@ -24,7 +24,7 @@ class Sand:
             matrix[object.y][object.x] = ' '  
             object.y += 1  
             object.x -= 1
-            matrix[object.y][object.x] = '▮'  
+            matrix[object.y][object.x] = '⛞'  
         else:
              index += 1
              return index
@@ -35,47 +35,42 @@ class Sand:
             matrix[object.y][object.x] = ' '  
             object.y += 1  
             object.x += 1
-            matrix[object.y][object.x] = '▮' 
+            matrix[object.y][object.x] = '⛞' 
         else:
             index += 1
             return index
              
     def check_left_down(self, object, matrix, matrix_height, matrix_width):
-
-            if object.y < matrix_height -1 and matrix_width >= object.x > 0 and matrix[object.y + 1][object.x - 1] == ' ':
-                matrix[object.y][object.x] = ' ' 
-                object.y += 1  
-                object.x -= 1
-                matrix[object.y][object.x] = '.'  
-            elif object.y < matrix_height -1 and object.x < matrix_width - 1  and matrix[object.y + 1][object.x + 1] == ' ':
-                matrix[object.y][object.x] = ' '  
-                object.y += 1  
-                object.x += 1
-                matrix[object.y][object.x] = '.'  
+        if object.y < matrix_height -1 and matrix_width >= object.x > 0 and matrix[object.y + 1][object.x - 1] == ' ':
+            matrix[object.y][object.x] = ' ' 
+            object.y += 1  
+            object.x -= 1
+            matrix[object.y][object.x] = '●'  
+        elif object.y < matrix_height -1 and object.x < matrix_width - 1  and matrix[object.y + 1][object.x + 1] == ' ':
+            matrix[object.y][object.x] = ' '  
+            object.y += 1  
+            object.x += 1
+            matrix[object.y][object.x] = '●'  
 
     def check_right_down(self, object, matrix, matrix_height, matrix_width):
-
-            if object.x +1 < matrix_width and matrix[object.y][object.x + 1] == ' ':
-                matrix[object.y][object.x] = ' '  
-                object.x += 1
-                matrix[object.y][object.x] = '.' 
-            elif object.x - 1 >= 0 and matrix[object.y][object.x - 1] == ' ':
-                matrix[object.y][object.x] = ' ' 
-                object.x -= 1
-                matrix[object.y][object.x] = '.'
-class Water (Sand):
-    def __init__(self, x, y, collision):
-        self.x = x
-        self.y = y
-        self.collision = collision
+        if object.x +1 < matrix_width and matrix[object.y][object.x + 1] == ' ':
+            matrix[object.y][object.x] = ' '  
+            object.x += 1
+            matrix[object.y][object.x] = '●' 
+        elif object.x - 1 >= 0 and matrix[object.y][object.x - 1] == ' ':
+            matrix[object.y][object.x] = ' ' 
+            object.x -= 1
+            matrix[object.y][object.x] = '●'
     
     def check_collision_water(self, object, matrix, matrix_height, matrix_width):
         if object.y < matrix_height -1 and matrix_width >= object.x > 0 and matrix[object.y + 1][object.x] == ' ':
             matrix[object.y][object.x] = ' '  
             object.y += 1 
-            matrix[object.y][object.x] = '.' 
+            matrix[object.y][object.x] = '●' 
         else:
              object.collision = True
+
+    
 
 def print_matrix(matrix):
     os.system('clear')
@@ -102,27 +97,28 @@ matrix = [[' ' for _ in range(matrix_width)] for _ in range(matrix_height)]
 index = 0
 
 # Sand generate
-for _ in range(400):
-    while True:
-        random_number = random.randint(0, 2)
-        if random_number == 0:
-            x = random.randint(15, 23)
-        elif random_number == 1:
-            x = random.randint(55, 62)
-        else:
-             x = random.randint(30, 40)
+def sand_gen():
+    for _ in range(400):
+        while True:
+            random_number = random.randint(0, 2)
+            if random_number == 0:
+                x = random.randint(15, 23)
+            elif random_number == 1:
+                x = random.randint(55, 62)
+            else:
+                x = random.randint(30, 40)
 
-        y = random.randint(0, matrix_height-1)
-        coordinates_exist = False
-        
-        for sand in sand_list:
-            if sand.x == x and sand.y == y:
-                coordinates_exist = True
+            y = random.randint(0, matrix_height-1)
+            coordinates_exist = False
+            
+            for sand in sand_list:
+                if sand.x == x and sand.y == y:
+                    coordinates_exist = True
+                    break
+            if not coordinates_exist:
                 break
-        if not coordinates_exist:
-            break
-    sand = Sand(x, y, False)
-    sand_list.append(sand)
+        sand = Object(x, y, False)
+        sand_list.append(sand)
 
 # Water generate
 def water_gen():
@@ -137,18 +133,20 @@ def water_gen():
                     break
             if not coordinates_exist:
                 break
-        water = Water(x, y, False)
+        water = Object(x, y, False)
         water_list.append(water)
     for water in water_list:
         matrix[water.y][water.x] = '●'
 
 for sand in sand_list:
-    matrix[sand.y][sand.x] = '▮'
+    matrix[sand.y][sand.x] = '⛞'
 
 run = True
 run_water = False
 
 text = "pysand"
+
+sand_gen()
 
 while run:    
     time.sleep(0.05)
